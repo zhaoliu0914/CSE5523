@@ -60,13 +60,13 @@ if __name__ == '__main__':
 
             median = medians[column]
 
-            number_match_1 = train_y_1[train_y_1[column] < median].shape[0]
+            number_match_1 = train_y_1[train_y_1[column] <= median].shape[0]
             theta_1 = number_match_1 / number_train_y_1
 
-            number_match_0 = train_y_0[train_y_0[column] < median].shape[0]
+            number_match_0 = train_y_0[train_y_0[column] <= median].shape[0]
             theta_0 = number_match_0 / number_train_y_0
 
-            if new_value >= median:
+            if new_value > median:
                 theta_1 = 1 - theta_1
                 theta_0 = 1 - theta_0
 
