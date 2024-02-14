@@ -8,63 +8,90 @@ if __name__ == '__main__':
     train = pandas.read_csv("spambase.train", header=None)
     test = pandas.read_csv("spambase.test", header=None)
 
+    #train = pandas.concat([train, test], ignore_index=True, sort=False)
+
     number_correct = 0
     number_wrong = 0
 
-    # number of rows
+    # number of rows in Test dataset
     test_rows = test.shape[0]
-    # number of columns
+    # number of columns in Test dataset
     test_columns = test.shape[1]
 
-    # Calculate P(Y=1)
-    number_spam = 0
+    # number of rows in Training dataset
     train_rows = train.shape[0]
+    # number of columns in Training dataset
     train_columns = train.shape[1]
-    for row in range(train_rows):
-        train_label = test.iloc[row, test_columns - 1]
-        if train_label == 1:
-            number_spam = number_spam + 1
 
-    probability_y_1 = number_spam / train_rows
+    # Training dataset with Y = 1
+    train_y_1 = train[train[57].isin([1])]
+    number_train_y_1 = train_y_1.shape[0]
 
-    # Calculate P(Y=1)
-    probability_y_0 = 1 - probability_y_1
+    # Training dataset with Y = 0
+    train_y_0 = train[train[57].isin([0])]
+    number_train_y_0 = train_y_0.shape[0]
+
+    # Probability(Y = 1)
+    probability_y_1 = number_train_y_1 / train_rows
+    # Probability(Y = 0)
+    probability_y_0 = number_train_y_0 / train_rows
+
+    #number_match_1 = train_y_1[train_y_1[11] < 0.14500000000000002].shape[0]
+    #print(f"number_match_1 = {number_match_1}")
+    #print(f"number_train_y_1 = {number_train_y_1}")
+    #print(f"number_train_y_1 = {number_train_y_0}")
+
+    medians = []
+    for column in range(train_columns - 1):
+        medians.append(train[column].median())
+        #print(f"column = {column}, median = {train[column].median()}")
 
     for row in range(test_rows):
         predict_value = 0
         real_value = test.iloc[row, test_columns - 1]
 
+        # For spam (Y=1) which indicates label = 1
         probability_spam = 1
+        # For Non-spam (Y=0) which indicates label = 0
         probability_non_spam = 1
 
-        # For spam (Y=1) which indicates label = 1
-        train_y_1 = train[train[57].isin([1])]
-        for column in range(test_columns-1):
-            given_value = test.iloc[row, column]
-            number_match = train_y_1[train_y_1[column].isin([given_value])].shape[0]
-            probability_x = number_match / train_rows
+        for column in range(test_columns - 1):
+            new_value = test.iloc[row, column]
 
-            probability_spam = probability_spam * probability_x
+            median = medians[column]
 
-        # For Non-spam (Y=0) which indicates label = 0
-        train_y_0 = train[train[57].isin([0])]
-        for column in range(test_columns-1):
-            given_value = test.iloc[row, column]
-            number_match = train_y_0[train_y_0[column].isin([given_value])].shape[0]
-            probability_x = number_match / train_rows
+            number_match_1 = train_y_1[train_y_1[column] < median].shape[0]
+            theta_1 = number_match_1 / number_train_y_1
 
-            probability_non_spam = probability_non_spam * probability_x
+            number_match_0 = train_y_0[train_y_0[column] < median].shape[0]
+            theta_0 = number_match_0 / number_train_y_0
 
-        if probability_spam > probability_non_spam:
+            if new_value >= median:
+                theta_1 = 1 - theta_1
+                theta_0 = 1 - theta_0
+
+            probability_spam = probability_spam * theta_1
+            probability_non_spam = probability_non_spam * theta_0
+
+        probability_spam = probability_spam * probability_y_1
+        probability_non_spam = probability_non_spam * probability_y_0
+
+        #print(f"row = {row}, probability_spam = {probability_spam}, probability_non_spam = {probability_non_spam}")
+
+        if probability_spam >= probability_non_spam:
             predict_value = 1
         else:
             predict_value = 0
 
+        #print(f"row = {row}, real_value = {real_value}, predict_value = {predict_value}")
+
         if predict_value == real_value:
-            #print(f"Correct: real_value = {real_value}, predict_value = {predict_value}")
             number_correct = number_correct + 1
         else:
-            #print(f"Wrong: real_value = {real_value}, predict_value = {predict_value}")
             number_wrong = number_wrong + 1
 
+    print(f"number_correct = {number_correct}")
+    print(f"number_wrong = {number_wrong}")
+
     print(f"Test Error: {number_wrong / test_rows}")
+
