@@ -1,14 +1,15 @@
-import pandas
+import numpy as np
+import pandas as pd
 
 SPAM = 1
 NON_SPAM = 0
 
 
 if __name__ == '__main__':
-    train = pandas.read_csv("spambase.train", header=None)
-    test = pandas.read_csv("spambase.test", header=None)
+    train = pd.read_csv("spambase.train", header=None)
+    test = pd.read_csv("spambase.test", header=None)
 
-    #train = pandas.concat([train, test], ignore_index=True, sort=False)
+    train = pd.concat([train, test], ignore_index=True, sort=False)
 
     number_correct = 0
     number_wrong = 0
@@ -36,15 +37,36 @@ if __name__ == '__main__':
     # Probability(Y = 0)
     probability_y_0 = number_train_y_0 / train_rows
 
+    medians = []
+    for column in range(train_columns - 1):
+        medians.append(train[column].median())
+        # print(f"column = {column}, median = {train[column].median()}")
+
+    """
+    median_condition_probability = np.array([[1, 2, 3]])
+
+    for column in range(train_columns - 1):
+        median = medians[column]
+
+        number_match_1 = train_y_1[train_y_1[column] <= median].shape[0]
+        theta_1 = number_match_1 / number_train_y_1
+
+        number_match_0 = train_y_0[train_y_0[column] <= median].shape[0]
+        theta_0 = number_match_0 / number_train_y_0
+
+        row_median_proba = np.array([[median, theta_1, theta_0]])
+
+        if column == 0:
+            median_condition_probability = row_median_proba
+        else:
+
+            median_condition_probability = np.concatenate((median_condition_probability, row_median_proba))
+    """
+    #print(median_condition_probability)
     #number_match_1 = train_y_1[train_y_1[11] < 0.14500000000000002].shape[0]
     #print(f"number_match_1 = {number_match_1}")
     #print(f"number_train_y_1 = {number_train_y_1}")
     #print(f"number_train_y_1 = {number_train_y_0}")
-
-    medians = []
-    for column in range(train_columns - 1):
-        medians.append(train[column].median())
-        #print(f"column = {column}, median = {train[column].median()}")
 
     for row in range(test_rows):
         predict_value = 0

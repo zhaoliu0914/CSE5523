@@ -47,6 +47,7 @@ if __name__ == '__main__':
             probability_x = number_match / train_rows
 
             probability_spam = probability_spam * probability_x
+        probability_spam = probability_spam * probability_y_1
 
         # For Non-spam (Y=0) which indicates label = 0
         for column in range(test_columns-1):
@@ -55,6 +56,7 @@ if __name__ == '__main__':
             probability_x = number_match / train_rows
 
             probability_non_spam = probability_non_spam * probability_x
+        probability_non_spam = probability_non_spam * probability_y_0
 
         if probability_spam > probability_non_spam:
             predict_value = 1
