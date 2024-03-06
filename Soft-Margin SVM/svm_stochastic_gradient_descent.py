@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 eta = 0.001
 slack_cost_c = 3
-number_iterations = [2, 4, 6, 8, 10]
-training_accuracys = []
+number_iterations = [2, 4, 6, 8, 10, 12, 14, 16, 18 ,20, 22, 24, 26, 28, 30]
+training_accuracies = []
 
 
 def normalize_label_to_numpy(train_label_temp):
@@ -28,36 +28,48 @@ def normalize_label_to_numpy(train_label_temp):
     return train_label
 
 
-def derivative_E_on_w(w, train_dataset, train_label, index):
+def derivative_E_on_w(w, b, index, train_dataset, train_label):
     row_size = train_dataset.shape[0]
+    column_size = train_dataset.shape[1]
 
-    y_i = train_label[index]
-    y_i_negative = -1 * y_i
+    summation = np.zeros(column_size)
 
     x_i = train_dataset[index]
+    y_i = train_label[index]
 
-    summation = y_i_negative * x_i
+    # Checking max(0, 1 - yi(W * xi + b))
+    # if 0 >= 1 - yi(W * xi + b), then Derivative(0) on w = 0
+    # if 0 < 1 - yi(W * xi + b), then Derivative(1 - yi(Wxi + b)) on w = -yi*xi
+    temp = np.add(np.dot(w, x_i), b)
+    temp = 1 - (y_i * temp)
 
-    # TODO: Max(0, -yx)
+    if 0 < temp:
+        summation = -1 * np.dot(x_i, y_i)
 
     summation = slack_cost_c * summation
 
-    w = w * (1/row_size)
+    w = (1/row_size) * w
     w_gradient = np.add(w, summation)
 
     return w_gradient
 
 
-def derivative_E_on_b(train_dataset, train_label, index):
-    #row_size = train_dataset.shape[0]
-
+def derivative_E_on_b(w, b, index, train_dataset, train_label):
     b_gradient = 0
 
+    x_i = train_dataset[index]
     y_i = train_label[index]
-    y_i_negative = -1 * y_i
 
-    if y_i_negative > 0:
-        b_gradient = slack_cost_c * y_i_negative
+    # Checking max(0, 1 - yi(W * xi + b))
+    # if 0 >= 1 - yi(W * xi + b), then Derivative(0) on b = 0
+    # if 0 < 1 - yi(W * xi + b), then Derivative(1 - yi(Wxi + b)) on b = -yi
+    temp = np.add(np.dot(w, x_i), b)
+    temp = 1 - (y_i * temp)
+
+    if 0 < temp:
+        b_gradient = -1 * y_i
+
+    b_gradient = slack_cost_c * b_gradient
 
     return b_gradient
 
@@ -83,10 +95,10 @@ if __name__ == '__main__':
             permutation = random.randrange(0, row_size)
 
             for i in range(permutation):
-                w_gradient = derivative_E_on_w(w, train_dataset, train_label, i)
+                w_gradient = derivative_E_on_w(w, b, i, train_dataset, train_label)
                 w = np.add(w, -1 * alpha * w_gradient)
 
-                b_gradient = derivative_E_on_b(train_dataset, train_label, i)
+                b_gradient = derivative_E_on_b(w, b, i, train_dataset, train_label)
                 b = b + (-1 * alpha * b_gradient)
 
         # Verify Training Accuracy
@@ -106,8 +118,8 @@ if __name__ == '__main__':
             if predict_value == real_value:
                 number_correct += 1
 
-        training_accuracys.append(number_correct / row_size)
-        print(f"Training Accuracy = {number_correct / row_size}")
+        training_accuracies.append(number_correct / row_size)
+        print(f"Iteration = {number_iteration}, Training Accuracy = {number_correct / row_size}")
 
-    plt.plot(number_iterations, training_accuracys)
+    plt.plot(number_iterations, training_accuracies)
     plt.show()
