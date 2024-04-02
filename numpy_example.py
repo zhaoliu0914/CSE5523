@@ -73,3 +73,25 @@ print(datetime.datetime.now())
 
 value = math.pow(math.e, 2)
 print(f"pow e = {value}")
+
+values = [4, 5, 2, 8, 1, 6, 10, 22]
+print(values.index(min(values)))
+
+print(np.argmin(values))
+
+point1 = np.array((2, -1))
+point2 = np.array((-2, 2))
+
+dis = np.linalg.norm(point1 - point2)
+print(f"dis = {dis}")
+
+mu_matrix = np.array([[3, 2],
+                     [6, 4]])
+print(f"mu_matrix = {mu_matrix}")
+
+mu_matrix[0] = [1, 9]
+print(f"mu_matrix = {mu_matrix}")
+
+array_1 = np.array([1, 2])
+array_2 = np.array([2, 2])
+print(f"vector equal? = {np.array_equal(array_1, array_2)}")
