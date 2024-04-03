@@ -11,6 +11,9 @@ print(a)
 zero_arr = np.zeros(10)
 print(zero_arr)
 
+zero_matrix = np.zeros((2, 3))
+print(zero_matrix)
+
 zero_matrix = np.zeros([5, 5])
 print(f"zero_matrix = {zero_matrix}")
 
@@ -50,6 +53,13 @@ print(f"vector_4 = {vector_4}")
 filter_arr = np.array([1, 1, 2, 3, 4])
 filtered_arr = filter_arr[np.where(filter_arr == 1)]
 print(f"filter_arr = {filtered_arr}")
+
+filter_arr = np.array([[1, 3],
+                       [2, 1],
+                       [3, 1],
+                       [4, 2]])
+filter_column = filter_arr[np.where(filter_arr == 1)]
+print(f"filter_arr = {filter_column}")
 
 
 arr = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
@@ -95,3 +105,12 @@ print(f"mu_matrix = {mu_matrix}")
 array_1 = np.array([1, 2])
 array_2 = np.array([2, 2])
 print(f"vector equal? = {np.array_equal(array_1, array_2)}")
+
+original = np.array([1, 2, 3])
+original_copy = np.copy(original)
+print(f"original = {original}")
+print(f"original_copy = {original_copy}")
+
+original_copy[0] = 8
+print(f"original = {original}")
+print(f"original_copy = {original_copy}")

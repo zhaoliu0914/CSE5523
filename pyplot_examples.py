@@ -11,3 +11,8 @@ plt.show()
 
 plt.plot([0, 1, 2, 3, 4], [0, 1, 2, 3, 4])
 plt.show()
+
+
+mandrill = plt.imread('Clustering/mandrill.png')[:,:,:3].astype(float)
+plt.imshow(mandrill)
+plt.show()

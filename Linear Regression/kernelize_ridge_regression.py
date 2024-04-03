@@ -17,32 +17,32 @@ def design_matrix_multiplication(design_matrix):
     return result
 
 
-def polynomial_kernel_1():
+def polynomial_kernel_1(u, v):
     """
     Polynomial Kernel: k(u, v) = (<u, v> + 1)^2
     """
-    print("")
+    return (np.dot(u, v) + 1)**2
 
 
-def polynomial_kernel_2():
+def polynomial_kernel_2(u, v):
     """
     Polynomial Kernel: k(u, v) = (<u, v> + 1)^3
     """
-    print("")
+    return (np.dot(u, v) + 1)**3
 
 
-def polynomial_kernel_3():
+def polynomial_kernel_3(u, v):
     """
     Polynomial Kernel: k(u, v) = (<u, v> + 1)^4
     """
-    print("")
+    return (np.dot(u, v) + 1)**4
 
 
-def gaussian_kernel():
+def gaussian_kernel(u, v):
     """
     Gaussian Kernel: k(u, v) = e^((-1/2) * (||u - v||^2)/variance) where variance=1
     """
-    print("")
+    return math.exp(-0.5 * np.linalg.norm(u - v))
 
 
 def get_y_matrix(dataset):
@@ -81,26 +81,38 @@ if __name__ == '__main__':
     #print(f"row_size = {row_size}")
     #print(f"column_size = {column_size}")
 
-    identity_matrix = np.identity(column_size)
+    identity_matrix = np.identity(row_size)
 
+    """
     w = design_matrix_multiplication(train_dataset)
     w = np.add(w, lambda_regression * identity_matrix)
     w = np.linalg.inv(w)
     w = np.matmul(w, np.transpose(train_dataset))
     w = np.matmul(w, y_matrix)
-
     w_transpose = np.transpose(w)
+    """
     sum_residuals = 0
+
+    k = np.zeros((row_size, row_size))
+
+    for i in range(row_size):
+        for j in range(row_size):
+            k[i, j] = polynomial_kernel_1(train_dataset[i][i], train_dataset[j][j])
+            #k[i, j] = polynomial_kernel_2(train_dataset[i][i], train_dataset[j][j])
+            #k[i, j] = polynomial_kernel_3(train_dataset[i][i], train_dataset[j][j])
+            #k[i, j] = gaussian_kernel(train_dataset[i][i], train_dataset[j][j])
 
     # Calculate Root Mean Square Error(RMSE)
     for index in range(row_size):
-        y_head = np.matmul(w_transpose, train_dataset[index])
-        residual = y_matrix[index] - y_head
-        residual_square = math.pow(residual, 2)
+        y_head = np.linalg.inv(k + lambda_regression * identity_matrix)
+        y_head = np.matmul(np.transpose(y_matrix[index]), y_head)
+        y_head = np.multiply(y_head, k)
 
+        residual = y_matrix[index] - y_head
+        residual_square = residual**2
         sum_residuals += residual_square
 
-    RMSE = math.sqrt(sum_residuals / (row_size - 2))
+    RMSE = math.sqrt(sum_residuals / row_size)
 
     print(f"RMSE = {RMSE}")
 
