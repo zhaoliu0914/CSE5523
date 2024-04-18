@@ -15,8 +15,15 @@ plt.show()
 
 """
 x = np.array([1, 2, 3, 4, 5, 6])
-y = np.array([60, 50, 40, 30, 20, 10])
+y = np.array([6, 5, 4, 3, 2, 1])
 plt.scatter(x, y, c="r", marker="x")
+#plt.show()
+
+#xpoints = np.array([1, 2, 3, 4])
+ypoints = np.array([3, 8, 1, 10])
+plt.plot(ypoints)
+ypoints = np.array([10, 9, 7, 4])
+plt.plot(ypoints)
 plt.show()
 
 mandrill = plt.imread('Clustering/mandrill.png')[:,:,:3].astype(float)
