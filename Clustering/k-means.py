@@ -108,12 +108,12 @@ while is_continue:
 
 neutral_gray = np.zeros(3*M**2)
 for index in range(neutral_gray.shape[0]):
-    neutral_gray[index] = 0.128 * 3
+    neutral_gray[index] = 128/255
 
 for index in range(X_copy.shape[0]):
     mu_index = point_mu_map[index][1]
     #relative_mean = abs(mus[int(mu_index)] - X_copy[index])
-    X_copy[index] = mus[int(mu_index)]
+    X_copy[index] = np.add(mus[int(mu_index)], neutral_gray)
 
 #print(f"iteration_count = {iteration_count}")
 #print(f"mus = {mus}")

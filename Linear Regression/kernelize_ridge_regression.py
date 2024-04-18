@@ -77,41 +77,60 @@ if __name__ == '__main__':
     row_size = shape[0]
     column_size = shape[1]
 
+    #print(f"train_dataset[0] = {train_dataset[0]}")
+    #print(f"sum(train_dataset[0]) = {np.sum(train_dataset[0])}")
+
+    train_dataset = (train_dataset - np.min(train_dataset)) / (np.max(train_dataset) - np.min(train_dataset))
+
+    #for row in range(row_size):
+    #    vector_sum = np.sum(train_dataset[row])
+    #    for column in range(column_size):
+    #        train_dataset[row][column] = train_dataset[row][column] / vector_sum
+
+
     #print(train_dataset[0])
     #print(f"row_size = {row_size}")
     #print(f"column_size = {column_size}")
 
     identity_matrix = np.identity(row_size)
 
-    """
-    w = design_matrix_multiplication(train_dataset)
-    w = np.add(w, lambda_regression * identity_matrix)
-    w = np.linalg.inv(w)
-    w = np.matmul(w, np.transpose(train_dataset))
-    w = np.matmul(w, y_matrix)
-    w_transpose = np.transpose(w)
-    """
     sum_residuals = 0
 
     k = np.zeros((row_size, row_size))
 
     for i in range(row_size):
         for j in range(row_size):
-            k[i, j] = polynomial_kernel_1(train_dataset[i][i], train_dataset[j][j])
+            k[i, j] = polynomial_kernel_1(train_dataset[i], train_dataset[j])
             #k[i, j] = polynomial_kernel_2(train_dataset[i][i], train_dataset[j][j])
             #k[i, j] = polynomial_kernel_3(train_dataset[i][i], train_dataset[j][j])
             #k[i, j] = gaussian_kernel(train_dataset[i][i], train_dataset[j][j])
 
+    w = np.linalg.inv(k + lambda_regression * identity_matrix)
+    w = np.matmul(np.transpose(y_matrix), w)
+
+    #print(f"w = {w}")
+    #k_x = np.zeros(row_size)
+    #for i in range(row_size):
+    #    k_x[i] = polynomial_kernel_1(train_dataset[i], train_dataset[0])
+    #print(f"k_x = {k_x}")
+
     # Calculate Root Mean Square Error(RMSE)
     for index in range(row_size):
-        y_head = np.linalg.inv(k + lambda_regression * identity_matrix)
-        y_head = np.matmul(np.transpose(y_matrix[index]), y_head)
-        y_head = np.multiply(y_head, k)
+        #k_x = np.matmul(train_dataset, train_dataset[index])
+        k_x = np.zeros(row_size)
+        for i in range(row_size):
+            k_x[i] = polynomial_kernel_1(train_dataset[i], train_dataset[index])
+
+        y_head = np.dot(w, k_x)
+
+        print(f"y_head = {y_head}")
 
         residual = y_matrix[index] - y_head
         residual_square = residual**2
         sum_residuals += residual_square
 
+    print(f"sum_residuals = {sum_residuals}")
+    print(f"row_size = {row_size}")
     RMSE = math.sqrt(sum_residuals / row_size)
 
     print(f"RMSE = {RMSE}")

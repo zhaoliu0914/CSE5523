@@ -114,3 +114,9 @@ print(f"original_copy = {original_copy}")
 original_copy[0] = 8
 print(f"original = {original}")
 print(f"original_copy = {original_copy}")
+
+# Normalize
+vector = np.array([3, 2, 5])
+vector_norm = (vector - np.min(vector)) / (np.max(vector)-np.min(vector))
+print(f"vector = {vector}")
+print(f"vector_norm = {vector_norm}")
