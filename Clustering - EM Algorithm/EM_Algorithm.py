@@ -10,7 +10,7 @@ x = np.random.rand(N)
 pi0 = np.array([0.7, 0.3])
 w0 = np.array([-2, 1])
 b0 = np.array([0.5, -0.5])
-sigma0 = np.array([.4, .3])
+sigma0 = np.array([0.4, 0.3])
 
 y = np.zeros_like(x)
 for i in range(N):
@@ -22,5 +22,5 @@ for i in range(N):
 
 
 # Here's the data plotted
-plt.scatter(x, y, c='r', marker='x')
+plt.scatter(x, y, c="r", marker="x")
 plt.show()
