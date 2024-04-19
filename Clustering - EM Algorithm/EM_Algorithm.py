@@ -57,7 +57,7 @@ while(True):
     for i in range(N):
         denominator = 0
         for k in range(2):
-            denominator += pi[k] * 1 / (np.sqrt(2 * np.pi) * standard_deviation[k]) * np.exp(-((y[i] - w[k] * x[i] - b[k])** 2) / (2 * standard_deviation[k]**2))
+            denominator += pi[k] * 1 / (np.sqrt(2 * np.pi) * standard_deviation[k]) * np.exp(-((y[i] - w[k] * x[i] - b[k])**2) / (2 * standard_deviation[k]**2))
 
         r_i_0 = (pi[0] * 1/(np.sqrt(2 * np.pi) * standard_deviation[0]) * np.exp(-((y[i] - w[0] * x[i] - b[0])**2)/(2 * standard_deviation[0]**2))) / denominator
         r_i_1 = (pi[1] * 1/(np.sqrt(2 * np.pi) * standard_deviation[1]) * np.exp(-((y[i] - w[1] * x[i] - b[1])**2)/(2 * standard_deviation[1]**2))) / denominator
